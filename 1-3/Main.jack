@@ -1,8 +1,12 @@
 class Main {
+    static int x;
+    static int y;
     function void main() {
-        var int x;
+        
 
-        let x = 2+3;
+        let x = 2;
+        let y=3;
+
         return;
     }
 }
