@@ -1,0 +1,18 @@
+push constant 10
+push constant 3
+call q.a 2
+label HALT
+goto HALT
+function q.a 1
+push argument 0
+call q.double 1
+push argument 1
+add
+pop local 0
+push local 0
+return
+function q.double 0
+push argument 0
+push argument 0
+add
+return

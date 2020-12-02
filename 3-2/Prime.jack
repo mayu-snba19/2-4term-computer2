@@ -1,0 +1,19 @@
+class Prime {
+    function int mod(int x, int y) {
+        var int x1;
+        let x1 = y * (x / y);
+        return x - x1;
+    }
+    function int isPrime(int x) {
+        var int i, m;
+        let i = 2;
+        while (i < x) {
+            let m = Prime.mod(x, i);
+            if (m = 0) {
+                return 0;
+            }
+            let i = i + 1;
+        }
+        return 1;
+    }
+}
