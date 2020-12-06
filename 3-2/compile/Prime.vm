@@ -1,0 +1,42 @@
+function Prime.mod 1
+push argument 1
+push argument 0
+push argument 1
+call Math.divide 2
+call Math.multiply 2
+pop local 0
+push argument 0
+push local 0
+sub
+return
+function Prime.isPrime 2
+push constant 2
+pop local 0
+label WHILE_EXP0 //ない
+push local 0
+push argument 0
+lt
+not
+if-goto WHILE_END0
+//label ない
+push argument 0
+push local 0
+call Prime.mod 2
+pop local 1
+push local 1
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 1
+return

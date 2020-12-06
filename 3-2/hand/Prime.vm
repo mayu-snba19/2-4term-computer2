@@ -1,0 +1,48 @@
+function Prime.mod 1 //インスタンス変数の個数
+push argument 1 //yをpush
+push argument 0 //xをpush
+//掛け算
+push argument 1
+call Math.divide 2
+call Math.multiply 2
+pop local 0
+push argument 0
+push local 0
+sub
+//割り算
+return
+//pop local 0
+function Prime.isPrime 2 //i,m
+push constant 2
+pop local 0 //i=2
+label whileLoop
+push local 0 //i
+push argument 0 //x
+lt
+not //i>=x
+if-goto whileEnd
+push argument 0 //引数x
+push local 0 //i
+call Prime.mod 2
+pop local 1 //mに代入
+push local 1
+push constant 0
+eq
+not
+if-goto zeroNotEqu
+push constant 0 //0をreturn
+return
+label zeroNotEqu
+push local 0 //i
+push constant 1
+add //i+1
+pop local 0 //iに代入
+goto whileLoop
+label whileEnd
+push constant 1
+return //return 1
+
+
+
+
+
