@@ -1,0 +1,14 @@
+class Main {
+    function void main() {
+        var int h;
+        var int w;
+        var int bmi;
+        let h = Keyboard.readInt("input height (cm): ");
+        let w = Keyboard.readInt("input weight (kg): ");
+        let bmi = w * 100 / h * 100 / h;
+        do Output.printString("BMI = ");
+        do Output.printInt(bmi);
+        return;
+    }
+}
+

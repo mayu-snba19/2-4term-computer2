@@ -12,13 +12,12 @@ return
 function Prime.isPrime 2
 push constant 2
 pop local 0
-label WHILE_EXP0 //ない
+label WHILE_EXP0
 push local 0
 push argument 0
 lt
 not
 if-goto WHILE_END0
-//label ない
 push argument 0
 push local 0
 call Prime.mod 2
