@@ -1,0 +1,1 @@
+javac -cp .:junit-platform-console-standalone-1.7.0.jar $1
