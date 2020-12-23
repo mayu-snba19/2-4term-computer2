@@ -59,6 +59,17 @@ class Tokenizer {
          * 見つかった場合 identifierの終端のindexを返す s.substring(0,index)がidentifierになる 見つからない場合
          * -1を返す
          */
+        if (!isAlphabet(s.charAt(0)))
+            return -1;
+        if (s.length() == 1)
+            return 1;
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!isAlphabetOrDigit(c))
+                return i;
+            if (i == s.length() - 1)
+                return i + 1;
+        }
 
         return -1;
     }
@@ -69,6 +80,17 @@ class Tokenizer {
          * symbolの終端のindexを返す s.substring(0,index)がsymbolになる symbolは1文字なので、indexは常に1
          * 見つからない場合 -1を返す
          */
+        if (!isSymbol(s.charAt(0)))
+            return -1;
+        if (s.length() == 1)
+            return 1;
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!isSymbol(c))
+                return i;
+            if (i == s.length() - 1)
+                return i + 1;
+        }
 
         return -1;
     }
@@ -79,7 +101,17 @@ class Tokenizer {
          * 見つかった場合 integerConstantの終端のindexを返す s.substring(0,index)がintegerConstantになる
          * 見つからない場合 -1を返す
          */
-
+        if (!isDigit(s.charAt(0)))
+            return -1;
+        if (s.length() == 1)
+            return 1;
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!isDigit(c))
+                return i;
+            if (i == s.length() - 1)
+                return i + 1;
+        }
         return -1;
     }
 
@@ -89,6 +121,17 @@ class Tokenizer {
          * 中の文字列には二重引用符（および改行）を含まない 見つかった場合 stringConstantの終端のindexを返す
          * s.substring(0,index)がstringConstant（両端の""を含む）になる 見つからない場合 -1を返す
          */
+        if (s.charAt(0) != '"')
+            return -1;
+        if (s.length() == 2)
+            return 2;
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '"')
+                return i + 1;
+            if (i == s.length() - 1)
+                return i + 1;
+        }
 
         return -1;
     }
