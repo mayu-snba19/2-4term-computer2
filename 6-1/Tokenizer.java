@@ -24,15 +24,16 @@ class Tokenizer {
             String token = "";
             if ((endIndex = findIdentifier(l)) >= 0) {
                 token = l.substring(0, endIndex);
-                tokenType = isKeyword(token) ? "??" : "??";
+                tokenType = isKeyword(token) ? "keyword" : "identifier";
             } else if ((endIndex = findIntegerConstant(l)) >= 0) {
-                tokenType = "??";
+                tokenType = "integerConstant";
             } else if ((endIndex = findStringConstant(l)) >= 0) {
-                tokenType = "??";
+                tokenType = "stringConstant";
             } else if ((endIndex = findSymbol(l)) >= 0) {
-                tokenType = "??";
+                tokenType = "symbol";
+                endIndex = 1;
             } else {
-                tokenType = "?";
+                tokenType = "";
                 endIndex = 1;
             }
             token = l.substring(0, endIndex);
