@@ -1,0 +1,12 @@
+// Breakout Room 4-1
+class Foo {
+    constructor Foo new() {
+        return this;
+    }
+    function void f() {
+        return;
+    }
+    method void m() {
+        return;
+    }
+}

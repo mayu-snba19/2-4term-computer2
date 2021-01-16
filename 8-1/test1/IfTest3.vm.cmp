@@ -1,0 +1,24 @@
+function IfTest3.f 0
+push constant 55
+if-goto IF_TRUE6
+goto IF_FALSE7
+label IF_TRUE6
+push constant 66
+if-goto IF_TRUE0
+goto IF_FALSE1
+label IF_TRUE0
+push constant 100
+call Output.printInteger 1
+pop temp 0
+label IF_FALSE1
+goto IF_END8
+label IF_FALSE7
+push constant 77
+if-goto IF_TRUE3
+goto IF_FALSE4
+label IF_TRUE3
+push constant 200
+call Output.printInteger 1
+pop temp 0
+label IF_FALSE4
+label IF_END8

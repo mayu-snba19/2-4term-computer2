@@ -1,0 +1,12 @@
+// 2重のwhile
+class WhileTest3 {
+    function void f() {
+        var int x, y;
+        while (x < 10) {
+            while (y < 20) {
+                let y = y + 1;
+            }
+            let x = x + 1;
+        }
+    }
+}

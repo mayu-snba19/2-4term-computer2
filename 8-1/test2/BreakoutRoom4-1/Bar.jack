@@ -1,0 +1,19 @@
+// Breakout Room 4-1
+class Bar {
+    function void main() {
+        var Bar bar;
+        let bar = Bar.new();
+        do bar.m2();
+        return;
+    }
+    constructor Bar new() {
+        return this;
+    }
+    method void m1() {
+        do m2();
+        return;
+    }
+    method void m2() {
+        return;
+    }
+}
