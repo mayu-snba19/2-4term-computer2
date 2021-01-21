@@ -1,0 +1,14 @@
+function IfTest2.f 0
+push constant 0
+if-goto IF_TRUE0
+goto IF_FALSE1
+label IF_TRUE0
+push constant 100
+call Output.printInteger 1
+pop temp 0
+goto IF_END2
+label IF_FALSE1
+push constant 200
+call Output.printInteger 1
+pop temp 0
+label IF_END2

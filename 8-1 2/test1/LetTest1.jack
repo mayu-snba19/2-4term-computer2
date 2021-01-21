@@ -1,0 +1,7 @@
+// 定数を変数に代入
+class LetTest1 {
+    function void f() {
+        var int x;
+        let x = 123;
+    }
+}

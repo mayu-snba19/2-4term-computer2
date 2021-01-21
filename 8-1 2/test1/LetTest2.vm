@@ -1,0 +1,4 @@
+function LetTest2.f 2
+push local 0
+push constant 123
+add

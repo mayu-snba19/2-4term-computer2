@@ -1,0 +1,15 @@
+class Main {
+    function void main() {
+        var int n, prime;
+        let n = 2;
+        while (n < 1000) {
+            let prime = Prime.isPrime(n);
+            if (prime > 0) {
+                do Output.printInt(n);
+                do Output.printString(" ");
+            }
+            let n = n + 1;
+        }
+        return;
+    }
+}

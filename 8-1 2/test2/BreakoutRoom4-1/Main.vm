@@ -1,0 +1,9 @@
+function Main.main 1
+call Foo.f 0
+pop temp 0
+call Foo.new 0
+push local 0
+call Foo.m 1
+pop temp 0
+push constant 0
+return

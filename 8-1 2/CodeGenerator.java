@@ -8,7 +8,6 @@ class CodeGenerator {
     private VarTable fieldVarTable = new VarTable();
     private VarTable parameterVarTable = new VarTable();
     private VarTable localVarTable = new VarTable();
-
     void defineVariable(String kind, String name, String type) {
         if (kind.equals("static")) {
             String segment = "static";
@@ -24,7 +23,6 @@ class CodeGenerator {
             localVarTable.define(name, type, segment);
         }
     }
-
     private VarInfo lookupVariable(String name) {
         if (localVarTable.isDefined(name)) {
             return localVarTable.get(name);
@@ -43,33 +41,26 @@ class CodeGenerator {
             return null;
         }
     }
-
     private int nLocalVar() {
         return localVarTable.size();
     }
-
     private int nParameterVar() {
         return parameterVarTable.size();
     }
-
     private int nFieldVar() {
         return fieldVarTable.size();
     }
-
     private int nStaticVar() {
         return staticVarTable.size();
     }
 
     private String classNameInCompilation;
-
     void startClass(String name) {
         classNameInCompilation = name;
         staticVarTable.clear();
         fieldVarTable.clear();
     }
-
     private String subroutineKindInCompilation;
-
     void startSubroutine(String kind) {
         subroutineKindInCompilation = kind;
         parameterVarTable.clear();
@@ -83,28 +74,25 @@ class CodeGenerator {
         code.addVmCode(bodyCode);
         return code;
     }
-
     VmCode subroutineHead(String subroutineName) {
         VmCode code = new VmCode();
-        code.functionCmd(classNameInCompilation + "." + subroutineName, nLocalVar());
+        code.functionCmd(classNameInCompilation+"."+subroutineName, nLocalVar());
         if (subroutineKindInCompilation.equals("constructor")) {
             code.pushCmd("constant", nFieldVar());
             code.callCmd("Memory.alloc", 1);
             code.popCmd("pointer", 0);
         } else if (subroutineKindInCompilation.equals("method")) {
             code.pushCmd("argument", 0);
-            code.popCmd("pointer", 0);
+            code.popCmd("pointer", 0);            
         }
         return code;
     }
-
     VmCode letStatement(String varName, VmCode indexCode, VmCode exprCode) {
         VmCode code = new VmCode();
         code.addVmCode(exprCode);
         if (indexCode == null) {
             // 普通の変数
             // 課題
-            code.popCmd(localVarTable.get(varName).segment(), localVarTable.get(varName).index());
         } else {
             // 配列要素
             code.addVmCode(setThatPointer(varName, indexCode));
@@ -112,7 +100,6 @@ class CodeGenerator {
         }
         return code;
     }
-
     private VmCode setThatPointer(String varName, VmCode index) {
         VmCode code = new VmCode();
         VarInfo varInfo = lookupVariable(varName);
@@ -122,7 +109,6 @@ class CodeGenerator {
         code.popCmd("pointer", 1);
         return code;
     }
-
     VmCode ifStatement(VmCode exprCode, VmCode thenCode, VmCode elseCode) {
         String trueLabel = labelGererator.newLabel("IF_TRUE");
         String falseLabel = labelGererator.newLabel("IF_FALSE");
@@ -131,28 +117,12 @@ class CodeGenerator {
         if (elseCode == null) {
             // elseがない場合
             // 課題
-            code.addVmCode(exprCode);
-            code.if_gotoCmd(trueLabel);
-            code.gotoCmd(falseLabel);
-            code.labelCmd(trueLabel);
-            code.addVmCode(thenCode);
-            code.labelCmd(falseLabel);
         } else {
             // elseがある場合
             // 課題
-            code.addVmCode(exprCode);
-            code.if_gotoCmd(trueLabel);
-            code.gotoCmd(falseLabel);
-            code.labelCmd(trueLabel);
-            code.addVmCode(thenCode);
-            code.gotoCmd(endLabel);
-            code.labelCmd(falseLabel);
-            code.addVmCode(elseCode);
-            code.labelCmd(endLabel);
         }
         return code;
     }
-
     VmCode whileStatement(VmCode expr, VmCode statements) {
         String expLabel = labelGererator.newLabel("WHILE_EXP");
         String endLabel = labelGererator.newLabel("WHILE_END");
@@ -166,14 +136,12 @@ class CodeGenerator {
         code.labelCmd(endLabel);
         return code;
     }
-
     VmCode doStatement(VmCode subroutineCall) {
         VmCode code = new VmCode();
         code.addVmCode(subroutineCall);
         code.popCmd("temp", 0);
         return code;
     }
-
     VmCode returnStatement(VmCode expression) {
         VmCode code = new VmCode();
         if (expression == null) {
@@ -184,14 +152,12 @@ class CodeGenerator {
         code.returnCmd();
         return code;
     }
-
     VmCode integerConstant(String integerConstant) {
         VmCode code = new VmCode();
         int index = Integer.parseInt(integerConstant);
         code.pushCmd("constant", index);
         return code;
     }
-
     VmCode stringConstant(String stringConstant) {
         VmCode code = new VmCode();
         String s = trimDoubleQuotes(stringConstant);
@@ -204,47 +170,42 @@ class CodeGenerator {
         }
         return code;
     }
-
     private String trimDoubleQuotes(String s) {
-        return s.substring(1, s.length() - 1);
+        return s.substring(1,s.length() - 1);
     }
-
     VmCode pushVariable(String varName) {
         VmCode code = new VmCode();
         VarInfo varInfo = lookupVariable(varName);
         code.pushCmd(varInfo.segment(), varInfo.index());
         return code;
     }
-
     VmCode pushArrayElement(String varName, VmCode index) {
         VmCode code = new VmCode();
         code.addVmCode(setThatPointer(varName, index));
         code.pushCmd("that", 0);
         return code;
     }
-
     VmCode subroutineCall(String classOrVarName, String subroutineName, List<VmCode> expressionList) {
         int nArgs = expressionList.size();
         VmCode code = new VmCode();
         if (classOrVarName == null) {
             code.pushCmd("pointer", 0);
             code.addVmCode(expressionList);
-            code.callCmd(classNameInCompilation + "." + subroutineName, nArgs + 1);
+            code.callCmd(classNameInCompilation+"."+subroutineName, nArgs + 1);
         } else {
             VarInfo varInfo = lookupVariable(classOrVarName);
             if (varInfo != null) {
                 String className = varInfo.type();
                 code.addVmCode(pushVariable(classOrVarName));
                 code.addVmCode(expressionList);
-                code.callCmd(className + "." + subroutineName, nArgs + 1);
+                code.callCmd(className+"."+subroutineName, nArgs + 1);
             } else { // className
                 code.addVmCode(expressionList);
-                code.callCmd(classOrVarName + "." + subroutineName, nArgs);
+                code.callCmd(classOrVarName+"."+subroutineName, nArgs);
             }
         }
         return code;
     }
-
     VmCode op(String op) {
         VmCode code = new VmCode();
         if (op.equals("+")) {
@@ -252,9 +213,9 @@ class CodeGenerator {
         } else if (op.equals("-")) {
             code.subCmd();
         } else if (op.equals("*")) {
-            code.callCmd("Math.multiply", 2);
+            code.callCmd("Math.multiply",2);
         } else if (op.equals("/")) {
-            code.callCmd("Math.divide", 2);
+            code.callCmd("Math.divide",2);
         } else if (op.equals("&")) {
             code.andCmd();
         } else if (op.equals("|")) {
@@ -268,7 +229,6 @@ class CodeGenerator {
         }
         return code;
     }
-
     VmCode unaryOp(String op, VmCode termCode) {
         VmCode code = new VmCode();
         code.addVmCode(termCode);
@@ -279,7 +239,6 @@ class CodeGenerator {
         }
         return code;
     }
-
     VmCode keywordConstant(String k) {
         VmCode code = new VmCode();
         if (k.equals("true")) {

@@ -1,0 +1,11 @@
+// if文（elseあり）
+// falseは0で表現される
+class IfTest2 {
+    function void f() {
+        if (false) {
+            do Output.printInteger(100);
+        } else {
+            do Output.printInteger(200);
+        }
+    }
+}

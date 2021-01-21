@@ -1,0 +1,1 @@
+java Compiler < $1 > ${1/jack/vm}
