@@ -1,2 +1,3 @@
 function LetTest1.f 1
 push constant 123
+pop local 0

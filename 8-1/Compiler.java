@@ -9,8 +9,9 @@ class Compiler {
     private CodeGenerator codeGenerator;
 
     Compiler(List<Token> t) {
-        this(t,false);
+        this(t, false);
     }
+
     Compiler(List<Token> t, boolean printToString) {
         tokens = t;
         index = 0;
@@ -22,16 +23,19 @@ class Compiler {
             out = System.out;
         }
     }
+
     public String getPrintedString() {
-        return (bout != null)? bout.toString(): "";
+        return (bout != null) ? bout.toString() : "";
     }
 
     Token currentToken() {
-        return (index < tokens.size())? tokens.get(index) : null;
+        return (index < tokens.size()) ? tokens.get(index) : null;
     }
+
     Token nextToken() {
-        return (index < tokens.size() - 1)? tokens.get(index + 1) : null;
+        return (index < tokens.size() - 1) ? tokens.get(index + 1) : null;
     }
+
     void advanceToNextToken() {
         index++;
     }
@@ -39,40 +43,50 @@ class Compiler {
     boolean currentTokenIs(String s) {
         return currentToken() != null && currentToken().is(s);
     }
+
     boolean currentTokenIsOneOf(String... s) {
         return currentToken() != null && currentToken().isOneOf(s);
     }
+
     boolean nextTokenIs(String s) {
         return nextToken() != null && nextToken().is(s);
     }
+
     boolean nextTokenIsOneOf(String... s) {
         return nextToken() != null && nextToken().isOneOf(s);
     }
 
     private int parseTreeIndentLevel = 0;
+
     void startNonterminal(String s) {
         printNonterminalNode(s);
         parseTreeIndentLevel++;
     }
+
     void endNonterminal(String s) {
         parseTreeIndentLevel--;
     }
+
     void printTerminalNode(String s) {
-        printParseTreeNode("'"+s+"'");
+        printParseTreeNode("'" + s + "'");
     }
+
     void printNonterminalNode(String s) {
         printParseTreeNode(s);
     }
+
     void printParseTreeNode(String s) {
         indent();
         out.println(s);
     }
+
     void indent() {
         int nSpace = parseTreeIndentLevel * 4;
         for (int i = 0; i < nSpace; i++) {
             out.print(" ");
         }
     }
+
     void error() {
         System.err.println("文法エラー");
         System.exit(1);
@@ -80,9 +94,9 @@ class Compiler {
 
     // 1
     // class → ‘class’ className ‘{‘
-    //              classVarDec*
-    //              subroutineDec*
-    //         ‘}’
+    // classVarDec*
+    // subroutineDec*
+    // ‘}’
     VmCode compileClass() {
         startNonterminal("class");
         parseTerminal("class");
@@ -101,6 +115,7 @@ class Compiler {
         endNonterminal("class");
         return code;
     }
+
     // 2
     // classVarDec → (‘static’ | ‘field’) type varName (‘,’ varName)* ‘;’
     void parseClassVarDec() {
@@ -117,11 +132,13 @@ class Compiler {
         parseTerminal(";");
         endNonterminal("classVarDec");
     }
+
     // 3
     // type → ‘int’ | ‘char’ | ‘boolean’ | className
     boolean currentTokenIsType() {
         return currentTokenIsOneOf("int", "char", "boolean") || currentTokenIsClassName();
     }
+
     String parseType() {
         startNonterminal("type");
         String typeString = null;
@@ -133,10 +150,11 @@ class Compiler {
         endNonterminal("type");
         return typeString;
     }
+
     // 4
     // subroutineDec → (‘constructor’ | ‘function’ | ‘method’) (‘void’ | type)
-    //                 subroutineName ‘(’ parameterList ‘)’
-    //                 subroutineBody
+    // subroutineName ‘(’ parameterList ‘)’
+    // subroutineBody
     VmCode compileSubroutineDec() {
         startNonterminal("subroutineDec");
         String kind = parseTerminal("constructor", "function", "method");
@@ -152,10 +170,11 @@ class Compiler {
         parseTerminal(")");
         VmCode body = compileSubroutineBody();
         // ローカル変数の個数が必要なのでbodyをコンパイルした後でheadのコードを生成
-        VmCode head = codeGenerator.subroutineHead(name); 
+        VmCode head = codeGenerator.subroutineHead(name);
         endNonterminal("subroutineDec");
         return codeGenerator.subroutineDec(head, body);
     }
+
     // 5
     // parameterList → ((type varName) (‘,’ type varName)*)?
     void parseParameterList() {
@@ -174,11 +193,12 @@ class Compiler {
         }
         endNonterminal("parameterList");
     }
+
     // 6
     // subroutineBody → ‘{’
-    //                      varDec*
-    //                      statements
-    //                  ‘}’
+    // varDec*
+    // statements
+    // ‘}’
     VmCode compileSubroutineBody() {
         startNonterminal("subroutineBody");
         parseTerminal("{");
@@ -190,6 +210,7 @@ class Compiler {
         endNonterminal("subroutineBody");
         return code;
     }
+
     // 7
     // varDec → ‘var’ type varName (‘,’ varName)* ‘;’
     void parseVarDec() {
@@ -207,17 +228,20 @@ class Compiler {
         parseTerminal(";");
         endNonterminal("varDec");
     }
+
     // 8
     // className → identifier
     boolean currentTokenIsClassName() {
         return currentToken() != null && currentToken().isIdentifier();
     }
+
     String parseClassName() {
         startNonterminal("className");
         String className = parseIdentifier();
         endNonterminal("className");
         return className;
     }
+
     // 9
     // subroutineName → identifier
     String parseSubroutineName() {
@@ -226,6 +250,7 @@ class Compiler {
         endNonterminal("subroutineName");
         return subroutineName;
     }
+
     // 10
     // varName → identifier
     String parseVarName() {
@@ -234,6 +259,7 @@ class Compiler {
         endNonterminal("varName");
         return varName;
     }
+
     // 11
     // statements → statement*
     VmCode compileStatements() {
@@ -246,12 +272,13 @@ class Compiler {
         endNonterminal("statements");
         return code;
     }
+
     // 12
     // statement → letStatement |
-    //             ifStatement |
-    //             whileStatement |
-    //             doStatement |
-    //             returnStatement
+    // ifStatement |
+    // whileStatement |
+    // doStatement |
+    // returnStatement
     VmCode compileStatement() {
         startNonterminal("statement");
         VmCode code = null;
@@ -271,6 +298,7 @@ class Compiler {
         endNonterminal("statement");
         return code;
     }
+
     // 13
     // letStatement → ‘let’ varName (‘[’ expression ‘]’)? ‘=’ expression ‘;’
     VmCode compileLetStatement() {
@@ -289,12 +317,13 @@ class Compiler {
         endNonterminal("letStatement");
         return codeGenerator.letStatement(name, indexCode, exprCode);
     }
+
     // 14
     // ifStatement → ‘if’ ‘(’ expression ‘)’ ‘{’
-    //                   statements
-    //               ‘}’ (‘else’ ‘{’ 
-    //                   statements
-    //               ‘}’)?
+    // statements
+    // ‘}’ (‘else’ ‘{’
+    // statements
+    // ‘}’)?
     VmCode compileIfStatement() {
         startNonterminal("ifStatement");
         parseTerminal("if");
@@ -314,10 +343,11 @@ class Compiler {
         endNonterminal("ifStatement");
         return codeGenerator.ifStatement(exprCode, thenCode, elseCode);
     }
+
     // 15
     // whileStatement → ‘while’ ‘(’ expression ‘)’ ‘{’
-    //                      statements
-    //                  ‘}’
+    // statements
+    // ‘}’
     VmCode compileWhileStatement() {
         // 課題
         // とりあえず空のVmCodeをreturnしているが、
@@ -325,14 +355,15 @@ class Compiler {
         startNonterminal("whileStatement");
         parseTerminal("while");
         parseTerminal("(");
-        compileExpression();
+        VmCode exprCode = compileExpression();
         parseTerminal(")");
         parseTerminal("{");
-        compileStatements();
+        VmCode statements = compileStatements();
         parseTerminal("}");
         endNonterminal("whileStatement");
-        return new VmCode();
+        return codeGenerator.whileStatement(exprCode, statements);
     }
+
     // 16
     // doStatement → ‘do’ subroutineCall ‘;’
     VmCode compileDoStatement() {
@@ -343,6 +374,7 @@ class Compiler {
         endNonterminal("doStatement");
         return codeGenerator.doStatement(subroutineCall);
     }
+
     // 17
     // returnStatement → ‘return’ expression? ‘;’
     VmCode compileReturnStatement() {
@@ -356,6 +388,7 @@ class Compiler {
         endNonterminal("returnStatement");
         return codeGenerator.returnStatement(expr);
     }
+
     // 18
     // expression → term (op term)*
     VmCode compileExpression() {
@@ -372,15 +405,16 @@ class Compiler {
         endNonterminal("expression");
         return code;
     }
+
     // 19
     // term → integerConstant |
-    //        stringConstant |
-    //        keywordConstant |
-    //        varName |
-    //        varName ‘[’ expression ‘]’ |
-    //        subroutineCall |
-    //        ‘(’ expression ‘)’ |
-    //         unaryOp term
+    // stringConstant |
+    // keywordConstant |
+    // varName |
+    // varName ‘[’ expression ‘]’ |
+    // subroutineCall |
+    // ‘(’ expression ‘)’ |
+    // unaryOp term
     VmCode compileTerm() {
         startNonterminal("term");
         VmCode code;
@@ -413,9 +447,10 @@ class Compiler {
         endNonterminal("term");
         return code;
     }
+
     // 20
     // subroutineCall → subroutineName ‘(’ expressionList ‘)’ |
-    //                  (className | varName) ‘.’ subroutineName ‘(’ expressionList ‘)’
+    // (className | varName) ‘.’ subroutineName ‘(’ expressionList ‘)’
     VmCode compileSubroutineCall() {
         startNonterminal("subroutineCall");
         String classOrVarName = null;
@@ -437,8 +472,9 @@ class Compiler {
             error();
         }
         endNonterminal("subroutineCall");
-        return codeGenerator.subroutineCall(classOrVarName,subroutineName,exprList);
+        return codeGenerator.subroutineCall(classOrVarName, subroutineName, exprList);
     }
+
     // 21
     // expressionList → (expression (‘,’ expression) * )?
     List<VmCode> compileExpressionList() {
@@ -457,11 +493,13 @@ class Compiler {
         endNonterminal("expressionList");
         return codeList;
     }
+
     // 22
     // op → ‘+’|‘-’|‘*’|‘/’|‘&’|‘|’|‘<’|‘>’|‘=’
     boolean currentTokenIsOp() {
         return currentTokenIsOneOf("+", "-", "*", "/", "&", "|", "<", ">", "=");
     }
+
     VmCode compileOp() {
         startNonterminal("op");
         VmCode code = null;
@@ -474,11 +512,13 @@ class Compiler {
         endNonterminal("op");
         return code;
     }
+
     // 23
     // unaryOp → ‘-’ | ‘~’
     boolean currentTokenIsUnaryOp() {
         return currentTokenIsOneOf("-", "~");
     }
+
     String parseUnaryOp() {
         startNonterminal("unaryOp");
         String unaryOp = null;
@@ -490,11 +530,13 @@ class Compiler {
         endNonterminal("unaryOp");
         return unaryOp;
     }
+
     // 24
     // keywordConstant → ‘true’ | ‘false’ | ‘null’ | ‘this’
     boolean currentTokenIsKeywordConstant() {
         return currentTokenIsOneOf("true", "false", "null", "this");
     }
+
     VmCode compileKeywordConstant() {
         startNonterminal("keywordConstant");
         VmCode code = null;
@@ -512,6 +554,7 @@ class Compiler {
     boolean currentTokenIsIntegerConstant() {
         return currentToken() != null && currentToken().isIntegerConstant();
     }
+
     VmCode compileIntegerConstant() {
         startNonterminal("integerConstant");
         VmCode code = null;
@@ -524,9 +567,11 @@ class Compiler {
         endNonterminal("integerConstant");
         return code;
     }
+
     boolean currentTokenIsStringConstant() {
         return currentToken() != null && currentToken().isStringConstant();
     }
+
     VmCode compileStringConstant() {
         startNonterminal("stringConstant");
         VmCode code = null;
@@ -539,9 +584,11 @@ class Compiler {
         endNonterminal("stringConstant");
         return code;
     }
+
     boolean currentTokenIsIdentifier() {
         return currentToken() != null && currentToken().isIdentifier();
     }
+
     String parseIdentifier() {
         startNonterminal("identifier");
         String tokenString = null;
@@ -553,6 +600,7 @@ class Compiler {
         endNonterminal("identifier");
         return tokenString;
     }
+
     // symbol or keyword
     String parseTerminal(String... tokens) {
         String tokenString = null;
@@ -563,8 +611,9 @@ class Compiler {
         }
         return tokenString;
     }
+
     String parseTerminal() {
-        String tokenString = currentToken().tokenString(); 
+        String tokenString = currentToken().tokenString();
         printTerminalNode(tokenString);
         advanceToNextToken();
         return tokenString;
@@ -580,6 +629,7 @@ class Compiler {
         }
         return tokens;
     }
+
     public static void main(String[] args) {
         List<Token> tokens = readTokensFromStdin();
         Compiler c = new Compiler(tokens, true);
