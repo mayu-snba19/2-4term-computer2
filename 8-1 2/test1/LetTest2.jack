@@ -1,7 +1,0 @@
-// 式の計算結果を変数に代入
-class LetTest2 {
-    function void f() {
-        var int x, y;
-        let y = x + 123;
-    }
-}

@@ -1,8 +1,0 @@
-// 最小限のwhile文
-// falseは0で表現される
-class WhileTest1 {
-    function void f() {
-        while (false) {
-        }
-    }
-}

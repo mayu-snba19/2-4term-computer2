@@ -1,9 +1,0 @@
-// if文（elseなし）
-// falseは0で表現される
-class IfTest1 {
-    function void f() {
-        if (false) {
-            do Output.printInteger(100);
-        }
-    }
-}
