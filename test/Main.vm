@@ -1,0 +1,4 @@
+push argument 1
+push constant 30
+add
+pop local 0
